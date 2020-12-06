@@ -7,32 +7,39 @@
   align-items: center;
   justify-content: center;
 }
-.login-container {
+.register-container {
   margin: auto;
 }
-.login-form {
+.register-form {
   margin: auto;
   min-width: 400px;
   max-width: 500px;
 }
-.login-form-forgot {
+.register-form-forgot {
   float: right;
 }
-.ant-col-rtl .login-form-forgot {
+.ant-col-rtl .register-form-forgot {
   float: left;
 }
 
-input {
+input,
+.input {
   height: 35px;
 }
 
-.login-container Button {
+.input,
+.input option {
+  height: 35px;
+  width: 300px;
+}
+
+.register-container Button {
   margin: auto;
   width: 100%;
   height: 40px;
 }
 
-.login-container .button-row {
+.register-container .button-row {
   display: flex;
   flex-flow: row;
   justify-content: space-around;
