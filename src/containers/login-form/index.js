@@ -1,13 +1,31 @@
 import React from 'react';
 import { Form, Input, Button, Checkbox, Divider } from 'antd';
 import { UserOutlined, LockOutlined, FacebookFilled, GoogleCircleFilled } from '@ant-design/icons';
+import { callServer } from '../../utils/NetworkUtils';
+import showNotification from '../../utils/NotificationUtils';
 import './index.css';
 
 const LoginForm = (props) =>
 {
-    const onFinish = (values) =>
+    const onFinish = async (values) =>
     {
         console.log('Received values of form: ', values);
+        const data = {
+            ...values
+        }
+
+        const result = await callServer(process.env.REACT_APP_HOST_NAME + '/auth/login', 'post', data);
+        if (result.auth)
+        {
+            localStorage.setItem('token', result.accessToken);
+            props.history.push('/home');
+
+        }
+        else
+        {
+            showNotification('error', result.message);
+        }
+
     };
 
     const handleRegisterClick = () =>

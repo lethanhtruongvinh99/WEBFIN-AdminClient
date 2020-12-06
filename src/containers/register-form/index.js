@@ -1,13 +1,40 @@
 import React from 'react';
-import { Form, Input, Button, Checkbox, DatePicker, Select } from 'antd';
+import { Form, Input, Button, DatePicker } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './index.css';
+import { callServer } from '../../utils/NetworkUtils';
+import showNotification from '../../utils/NotificationUtils';
 
 const registerForm = (props) =>
 {
-    const onFinish = (values) =>
+    const onFinish = async (values) =>
     {
         console.log('Received values of form: ', values);
+        if (values.password !== values.passwordConfirm)
+        {
+            showNotification('error', 'Password does not match!');
+            return;
+        }
+
+        const data = {
+            ...values,
+            role: 2,
+            isCreatedAt: new Date(),
+        }
+
+        const result = await callServer(process.env.REACT_APP_HOST_NAME + '/auth/signup', 'post', data);
+        if (result.auth)
+        {
+            localStorage.setItem('token', result.accessToken);
+            props.history.push('/home');
+
+        }
+        else
+        {
+            showNotification('error', result.message);
+        }
+
+
     };
 
     const handleLoginClick = () =>
