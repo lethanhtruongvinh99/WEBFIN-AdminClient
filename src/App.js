@@ -1,32 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
-import React from 'react';
-import LoginForm from './containers/login-form/index';
-import Homepage from './containers/homepage/index';
-import AuthRedirect from './containers/auth-redirect/index';
-import
-{
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-  Link
-} from 'react-router-dom';
+import React from "react";
+import { Route, Router, Switch } from "react-router-dom";
+import "./App.css";
+import LoginForm from "./containers/login-form/index";
+import { history } from "./history";
+import LayoutCustom from "./containers/the-layout/index";
 
-function App()
-{
+function App() {
   return (
-    <Router>
+    <Router history={history}>
       <Switch>
-        <Route exact path = "/auth/:token" component={AuthRedirect} />
-        <Route exact path="/home" component={Homepage} />
         <Route exact path="/login" component={LoginForm} />
-        <Route path="/" component={LoginForm}>
-          <Redirect to="/login" />
-        </Route>
+        <Route path="/" component={LayoutCustom} />
       </Switch>
     </Router>
-
   );
 }
 

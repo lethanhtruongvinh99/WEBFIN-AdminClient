@@ -1,18 +1,39 @@
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Modal, Spin } from "antd";
 import React, { useEffect, useState } from "react";
-import { Form, Input, Button, Checkbox, Divider, Spin } from "antd";
-import {
-  UserOutlined,
-  LockOutlined,
-  FacebookFilled,
-  GoogleCircleFilled,
-} from "@ant-design/icons";
 import callServer from "../../utils/NetworkUtils";
 import showNotification from "../../utils/NotificationUtils";
 import "./index.css";
 
 const LoginForm = (props) => {
-
   const [isLoading, setIsLoading] = useState(false);
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const [recoveryPasswordUsername, setRecoveryPasswordUsername] = useState("");
+
+  const handleOk = async () => {
+    const data = { username: recoveryPasswordUsername };
+    const result = await callServer(
+      process.env.REACT_APP_HOST_NAME + "/auth/recoveryrequest",
+      "post",
+      data
+    );
+    if (result.auth) {
+      showNotification("error", result.message);
+      setIsModalVisible(false);
+    } else {
+      showNotification("error", result.message);
+    }
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleRecoveryUsername = (e) => {
+    setRecoveryPasswordUsername(e.target.value);
+  };
 
   useEffect(() => {
     console.log("Login Form");
@@ -34,29 +55,16 @@ const LoginForm = (props) => {
     if (result.auth) {
       setIsLoading(false);
       localStorage.setItem("token", result.accessToken);
-      props.history.push("/home");
+      props.history.push("/games");
     } else {
+      setIsLoading(false);
       showNotification("error", result.message);
     }
   };
 
-  const handleRegisterClick = () => {
-    props.history.push("/register");
-  };
-
-  const handleFacebookLogin = () => {
-    window.open(process.env.REACT_APP_HOST_NAME + '/auth/facebook', '_self');
-  };
-
-  const handleGoogleLogin = () => {
-    window.open(process.env.REACT_APP_HOST_NAME + '/auth/google', '_self');
-  };
-
   return (
     <div className="login-container">
-      <h1 style={{ textAlign: "center", margin: "40px 0px", fontSize: "32px" }}>
-        Login
-      </h1>
+      <h1 style={{ textAlign: "center", fontSize: "32px" }}>Login</h1>
       <Form
         name="normal_login"
         className="login-form"
@@ -94,15 +102,7 @@ const LoginForm = (props) => {
             placeholder="Password"
           />
         </Form.Item>
-        <Form.Item>
-          <Form.Item name="remember" valuePropName="checked" noStyle>
-            <Checkbox>Remember me</Checkbox>
-          </Form.Item>
 
-          <a className="login-form-forgot" href="">
-            Forgot password
-          </a>
-        </Form.Item>
         {isLoading ? (
           <div className="loading-spinner">
             <Spin size="large" />
@@ -118,6 +118,20 @@ const LoginForm = (props) => {
           </Button>
         </Form.Item>
       </Form>
+      <>
+        <Modal
+          title="Recovery Password"
+          visible={isModalVisible}
+          onOk={handleOk}
+          onCancel={handleCancel}
+        >
+          <Input
+            prefix={<UserOutlined className="site-form-item-icon" />}
+            placeholder="Username"
+            onChange={(e) => handleRecoveryUsername(e)}
+          />
+        </Modal>
+      </>
     </div>
   );
 };
