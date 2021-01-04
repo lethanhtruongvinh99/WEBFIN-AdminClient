@@ -1,8 +1,6 @@
 import { Table, Input, Button, Tag, Avatar, Row, Typography, Col } from "antd";
-import Highlighter from "react-highlight-words";
-import { SearchOutlined } from "@ant-design/icons";
+import { history } from "../../history";
 import { useState } from "react";
-
 const columns = [
   {
     title: "Người dùng",
@@ -38,7 +36,12 @@ const columns = [
     title: "Action",
     key: "action",
     render: (text, record) => (
-      <Button danger={record.status === "Hoạt động" ? true : false}>
+      <Button
+        danger={record.status === "Hoạt động" ? true : false}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
         {record.status === "Hoạt động" ? "Chặn" : "Bỏ chặn"}
       </Button>
     ),
@@ -129,6 +132,13 @@ const Users = (props) => {
         style={{ width: "80%", marginTop: "15px" }}
         columns={columns}
         dataSource={filteredData}
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: (event) => {
+              history.push("/user/" + record.key);
+            },
+          };
+        }}
       />
     </>
   );
