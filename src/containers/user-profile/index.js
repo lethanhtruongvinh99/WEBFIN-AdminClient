@@ -1,6 +1,22 @@
 import { Row, Col, Typography, Avatar, Button, Layout } from "antd";
 import RoomItem from "./../../components/room-item/index";
-const UserProfile = (props) => {
+import { useState, useEffect } from 'react';
+import { callServer } from './../../utils/NetworkUtils';
+const UserProfile = (props) =>
+{
+  const [userProfile, setUserProfile] = useState({});
+  useEffect(() =>
+  {
+    const fetchUserProfile = async (accountId) =>
+    {
+      const result = await callServer('/users/profile', 'POST', { accountId });
+      console.log(result);
+      setUserProfile(result.account);
+    }
+
+    fetchUserProfile(props.match.params.id);
+
+  }, [])
   return (
     <Layout.Content
       style={{ padding: "150px 50px", width: "100vw", overflowX: "hidden" }}
@@ -25,7 +41,8 @@ const UserProfile = (props) => {
           <Button
             size="small"
             danger={props.status === "Hoạt động" ? true : false}
-            onClick={(e) => {
+            onClick={(e) =>
+            {
               e.stopPropagation();
             }}
           >
@@ -34,55 +51,49 @@ const UserProfile = (props) => {
         </Col>
       </Row>
 
-      <Row style={{ marginTop: "30px" }} justify="center">
-        <Col>
+      <Row style={{ marginTop: "30px" }} justify="center" gutter={60}>
+        <Col style={{ textAlign: 'center' }}>
+          <Typography.Title style={{ fontWeight: '300' }} level={5}>
+            Họ và tên
+          </Typography.Title>
+          <Typography.Title level={4}>
+            {props.fullname ? props.fullname : "Phan Nhật Vinh"}
+          </Typography.Title>
+        </Col>
+        <Col style={{ textAlign: 'center' }}>
+          <Typography.Title style={{ fontWeight: '300' }} level={5}>
+            Tài khoản
+          </Typography.Title>
+          <Typography.Title level={4}>
+            {props.fullname ? props.fullname : "Phan Nhật Vinh"}
+          </Typography.Title>
+        </Col>
+        <Col style={{ textAlign: 'center' }}>
+          <Typography.Title style={{ fontWeight: '300' }} level={5}>
+            Email
+          </Typography.Title>
+          <Typography.Title level={4}>
+            {props.fullname ? props.fullname : "Phan Nhật Vinh"}
+          </Typography.Title>
+        </Col>
+        <Col style={{ textAlign: 'center' }}>
+          <Typography.Title style={{ fontWeight: '300' }} level={5}>
+            Ngày sinh
+          </Typography.Title>
+          <Typography.Title level={4}>
+            {props.fullname ? props.fullname : "Phan Nhật Vinh"}
+          </Typography.Title>
+        </Col>
+        <Col style={{ textAlign: 'center' }}>
+          <Typography.Title style={{ fontWeight: '300' }} level={5}>
+            Ngày tham gia
+          </Typography.Title>
           <Typography.Title level={4}>
             {props.fullname ? props.fullname : "Phan Nhật Vinh"}
           </Typography.Title>
         </Col>
       </Row>
 
-      <Row justify="center">
-        <Col>
-          <Typography.Title level={5} style={{ fontWeight: "300" }}>
-            Tham gia ngày {props.joinedAt ? props.joinedAt : "23/06/2077"}
-          </Typography.Title>
-        </Col>
-      </Row>
-
-      <Row style={{ marginTop: "30px" }} justify="center" gutter={60}>
-        <Col>
-          <Row justify="center">
-            <Typography.Title level={4}>Số cúp</Typography.Title>
-          </Row>
-          <Row justify="center">
-            <Typography.Title level={4} style={{ fontWeight: "300" }}>
-              {props.cups ? props.cups : "200"}
-            </Typography.Title>
-          </Row>
-        </Col>
-        <Col>
-          <Row justify="center">
-            <Typography.Title level={4}>Trận đã chơi</Typography.Title>
-          </Row>
-          <Row justify="center">
-            <Typography.Title level={4} style={{ fontWeight: "300" }}>
-              {props.totalMatches ? props.totalMatches : "200"}
-            </Typography.Title>
-          </Row>
-        </Col>
-
-        <Col>
-          <Row justify="center">
-            <Typography.Title level={4}>Tỉ lệ thắng</Typography.Title>
-          </Row>
-          <Row justify="center">
-            <Typography.Title level={4} style={{ fontWeight: "300" }}>
-              {props.winRate ? props.winRate : "200"}
-            </Typography.Title>
-          </Row>
-        </Col>
-      </Row>
 
       <Row style={{ marginTop: "30px" }} justify="center">
         <Col>

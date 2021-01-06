@@ -1,6 +1,7 @@
 import { Table, Input, Button, Tag, Avatar, Row, Typography, Col } from "antd";
 import { history } from "../../history";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { callServer } from './../../utils/NetworkUtils';
 const columns = [
   {
     title: "Người dùng",
@@ -22,12 +23,12 @@ const columns = [
   },
   {
     title: "Trạng thái",
-    key: "status",
-    dataIndex: "status",
+    key: "isActivate",
+    dataIndex: "isActivate",
     render: (text) => (
       <>
-        <Tag color={text === "Hoạt động" ? "green" : "red"} key={text}>
-          {text}
+        <Tag color={text ? "green" : "red"} key={text}>
+          {text ? 'Hoạt động' : 'Bị chặn'}
         </Tag>
       </>
     ),
@@ -37,68 +38,42 @@ const columns = [
     key: "action",
     render: (text, record) => (
       <Button
-        danger={record.status === "Hoạt động" ? true : false}
-        onClick={(e) => {
+        danger={record.isActivate ? true : false}
+        onClick={(e) =>
+        {
           e.stopPropagation();
         }}
       >
-        {record.status === "Hoạt động" ? "Chặn" : "Bỏ chặn"}
+        {record.isActivate ? "Chặn" : "Bỏ chặn"}
       </Button>
     ),
   },
 ];
 
-const data = [
-  {
-    key: "1",
-    fullName: "Phan Nhật Vinh",
-    email: "vinh@gmail.com",
-    status: "Hoạt động",
-  },
-  {
-    key: "2",
-    fullName: "Phan Nhật Vinh",
-    email: "vinh@gmail.com",
-    status: "Bị chặn",
-  },
-  {
-    key: "3",
-    fullName: "Phan Nhật Vinh",
-    email: "vinh@gmail.com",
-    status: "Bị chặn",
-  },
-  {
-    key: "4",
-    fullName: "Phan Nhật Vinh",
-    email: "vinh@gmail.com",
-    status: "Hoạt động",
-  },
-  {
-    key: "5",
-    fullName: "Phan Nhật Y",
-    email: "vinh@gmail.com",
-    status: "Hoạt động",
-  },
-  {
-    key: "6",
-    fullName: "Phan Nhật X",
-    email: "vinh@gmail.com",
-    status: "Hoạt động",
-  },
-  {
-    key: "7",
-    fullName: "Phan Nhật Vinh",
-    email: "vinh@gmail.com",
-    status: "Hoạt động",
-  },
-];
+const Users = (props) =>
+{
+  const [userList, setUsetList] = useState([]);
+  const [filteredData, setFilteredData] = useState(userList);
 
-const Users = (props) => {
-  const [filteredData, setFilteredData] = useState(data);
+  useEffect(() =>
+  {
+    const getUserList = async () =>
+    {
+      const result = await callServer('/users/', 'GET', {});
+      console.log(result.accounts)
+      setUsetList(result.accounts)
+      setFilteredData(result.accounts);
+    }
 
-  const handleFilter = (event) => {
+    getUserList();
+
+
+  }, [])
+
+  const handleFilter = (event) =>
+  {
     const value = event.target.value;
-    let newFilteredData = data.filter(
+    let newFilteredData = userList.filter(
       (item) =>
         item.fullName.toLowerCase().includes(value.toLowerCase()) ||
         item.email.toLowerCase().includes(value.toLowerCase())
@@ -132,10 +107,12 @@ const Users = (props) => {
         style={{ width: "80%", marginTop: "15px" }}
         columns={columns}
         dataSource={filteredData}
-        onRow={(record, rowIndex) => {
+        onRow={(record, rowIndex) =>
+        {
           return {
-            onClick: (event) => {
-              history.push("/user/" + record.key);
+            onClick: (event) =>
+            {
+              history.push("/user/" + record._id);
             },
           };
         }}

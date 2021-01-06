@@ -1,45 +1,53 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal, Spin } from "antd";
 import React, { useEffect, useState } from "react";
-import callServer from "../../utils/NetworkUtils";
+import { callServer } from "../../utils/NetworkUtils";
 import showNotification from "../../utils/NotificationUtils";
 import "./index.css";
 
-const LoginForm = (props) => {
+const LoginForm = (props) =>
+{
   const [isLoading, setIsLoading] = useState(false);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const [recoveryPasswordUsername, setRecoveryPasswordUsername] = useState("");
 
-  const handleOk = async () => {
+  const handleOk = async () =>
+  {
     const data = { username: recoveryPasswordUsername };
     const result = await callServer(
       process.env.REACT_APP_HOST_NAME + "/auth/recoveryrequest",
       "post",
       data
     );
-    if (result.auth) {
+    if (result.auth)
+    {
       showNotification("error", result.message);
       setIsModalVisible(false);
-    } else {
+    } else
+    {
       showNotification("error", result.message);
     }
   };
 
-  const handleCancel = () => {
+  const handleCancel = () =>
+  {
     setIsModalVisible(false);
   };
 
-  const handleRecoveryUsername = (e) => {
+  const handleRecoveryUsername = (e) =>
+  {
     setRecoveryPasswordUsername(e.target.value);
   };
 
-  useEffect(() => {
+  useEffect(() =>
+  {
     console.log("Login Form");
   }, []);
 
-  const onFinish = async (values) => {
+  const onFinish = async (values) =>
+  {
     console.log("Received values of form: ", values);
     setIsLoading(true);
     const data = {
@@ -52,11 +60,13 @@ const LoginForm = (props) => {
       data
     );
     // console.log(result);
-    if (result.auth) {
+    if (result.auth)
+    {
       setIsLoading(false);
       localStorage.setItem("token", result.accessToken);
       props.history.push("/games");
-    } else {
+    } else
+    {
       setIsLoading(false);
       showNotification("error", result.message);
     }
