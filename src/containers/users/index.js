@@ -1,7 +1,7 @@
 import { Table, Input, Button, Tag, Avatar, Row, Typography, Col } from "antd";
 import { history } from "../../history";
 import { useState, useEffect } from "react";
-import { callServer } from './../../utils/NetworkUtils';
+import { callServer, callServer2, callServerGET } from './../../utils/NetworkUtils';
 const columns = [
   {
     title: "Người dùng",
@@ -59,7 +59,7 @@ const Users = (props) =>
   {
     const getUserList = async () =>
     {
-      const result = await callServer('/users/', 'GET', {});
+      const result = await callServer(process.env.REACT_APP_HOST_NAME + '/users/', 'GET', {});
       console.log(result.accounts)
       setUsetList(result.accounts)
       setFilteredData(result.accounts);

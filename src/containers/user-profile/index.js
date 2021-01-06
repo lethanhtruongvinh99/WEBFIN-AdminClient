@@ -2,21 +2,55 @@ import { Row, Col, Typography, Avatar, Button, Layout } from "antd";
 import RoomItem from "./../../components/room-item/index";
 import { useState, useEffect } from 'react';
 import { callServer } from './../../utils/NetworkUtils';
+import { useHistory } from "react-router";
 const UserProfile = (props) =>
 {
+  const history = useHistory();
+  const urlToken = history.location.pathname.split('/');
+  const accountId = urlToken[urlToken.length - 1];
+
   const [userProfile, setUserProfile] = useState({});
+  const [listHistory, setListHistory] = useState([]);
+
   useEffect(() =>
   {
     const fetchUserProfile = async (accountId) =>
     {
-      const result = await callServer('/users/profile', 'POST', { accountId });
-      console.log(result);
+      const result = await callServer(process.env.REACT_APP_HOST_NAME + '/users/profile', 'POST', { accountId: accountId });
+      // console.log(result);
+      // console.log(result.account);
       setUserProfile(result.account);
+      // console.log(userProfile);
     }
 
-    fetchUserProfile(props.match.params.id);
+    const fetchListHistory = async (accountId) => {
+      const result = await callServer(process.env.REACT_APP_HOST_NAME + "/rooms/user", "POST", {accountId: accountId});
+      // console.log(result);
+      setListHistory(result.data);
+      // console.log(result.data);
+    }
 
-  }, [])
+    fetchUserProfile(accountId);
+
+    fetchListHistory(accountId);
+
+  }, []);
+
+  const handleBlockButton = async (accountId) => {
+    const result = await callServer(process.env.REACT_APP_HOST_NAME + "/users/deactivate", "POST", {accountId: accountId});
+    console.log(result);
+    if (result.status === 200){
+      userProfile.isActivate = false;
+    }
+  }
+
+  const handleUnblockButton = async () => {
+    const result = await callServer(process.env.REACT_APP_HOST_NAME + "/users/deactivate", "POST", {accountId: accountId});
+    console.log(result);
+    if (result.status === 200){
+      userProfile.isActivate = true;
+    }
+  }
   return (
     <Layout.Content
       style={{ padding: "150px 50px", width: "100vw", overflowX: "hidden" }}
@@ -46,7 +80,7 @@ const UserProfile = (props) =>
               e.stopPropagation();
             }}
           >
-            {props.status === "Hoạt động" ? "Chặn" : "Bỏ chặn"}
+            {userProfile.isActivate ? "Chặn" : "Bỏ chặn"}
           </Button>
         </Col>
       </Row>
@@ -57,7 +91,7 @@ const UserProfile = (props) =>
             Họ và tên
           </Typography.Title>
           <Typography.Title level={4}>
-            {props.fullname ? props.fullname : "Phan Nhật Vinh"}
+            {userProfile.fullName ? userProfile.fullName : "Phan Nhật Vinh"}
           </Typography.Title>
         </Col>
         <Col style={{ textAlign: 'center' }}>
@@ -65,7 +99,7 @@ const UserProfile = (props) =>
             Tài khoản
           </Typography.Title>
           <Typography.Title level={4}>
-            {props.fullname ? props.fullname : "Phan Nhật Vinh"}
+            {userProfile.username ? userProfile.username : "Phan Nhật Vinh"}
           </Typography.Title>
         </Col>
         <Col style={{ textAlign: 'center' }}>
@@ -73,7 +107,7 @@ const UserProfile = (props) =>
             Email
           </Typography.Title>
           <Typography.Title level={4}>
-            {props.fullname ? props.fullname : "Phan Nhật Vinh"}
+            {userProfile.email ? userProfile.email : "Phan Nhật Vinh"}
           </Typography.Title>
         </Col>
         <Col style={{ textAlign: 'center' }}>
@@ -81,7 +115,7 @@ const UserProfile = (props) =>
             Ngày sinh
           </Typography.Title>
           <Typography.Title level={4}>
-            {props.fullname ? props.fullname : "Phan Nhật Vinh"}
+            {userProfile.dob ? userProfile.dob : "Phan Nhật Vinh"}
           </Typography.Title>
         </Col>
         <Col style={{ textAlign: 'center' }}>
@@ -89,7 +123,7 @@ const UserProfile = (props) =>
             Ngày tham gia
           </Typography.Title>
           <Typography.Title level={4}>
-            {props.fullname ? props.fullname : "Phan Nhật Vinh"}
+            {userProfile.isCreatedAt ? userProfile.isCreatedAt : "Phan Nhật Vinh"}
           </Typography.Title>
         </Col>
       </Row>
@@ -107,6 +141,7 @@ const UserProfile = (props) =>
         gutter={[30, 30]}
         style={{ margin: "30px 0px" }}
       >
+        {listHistory.size > 0 ? <p>{listHistory.size}</p>: null}
         <RoomItem />
         <RoomItem />
         <RoomItem />

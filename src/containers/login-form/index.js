@@ -56,7 +56,7 @@ const LoginForm = (props) =>
 
     const result = await callServer(
       process.env.REACT_APP_HOST_NAME + "/auth/login",
-      "post",
+      "POST",
       data
     );
     // console.log(result);
@@ -64,7 +64,7 @@ const LoginForm = (props) =>
     {
       setIsLoading(false);
       localStorage.setItem("token", result.accessToken);
-      props.history.push("/games");
+      props.history.push("/users");
     } else
     {
       setIsLoading(false);
