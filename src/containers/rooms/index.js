@@ -1,7 +1,23 @@
-import { Row, Typography, Layout } from "antd";
+import React, { useState, useEffect } from "react";
+import { Row, Typography, Layout, Spin } from "antd";
 import RoomItem from "./../../components/room-item/index";
+import { callServer, callServerGET } from "../../utils/NetworkUtils";
 
 const Rooms = (props) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [listRooms, setListRooms] = useState([]);
+
+  useEffect(()=>{
+    const getListRoom = async () => {
+      const response = await callServerGET(process.env.REACT_APP_HOST_NAME + '/rooms/');
+      // console.log(response);
+      const data = await response.json();
+      // console.log(data);
+      setListRooms(data.data);
+      setIsLoading(false);
+    }
+    getListRoom();
+  },[])
   return (
     <>
       <Layout.Content style={{ padding: "150px 50px", position: "relative" }}>
@@ -15,12 +31,7 @@ const Rooms = (props) => {
           gutter={[30, 30]}
           style={{ margin: "30px 0px" }}
         >
-          <RoomItem />
-          <RoomItem />
-          <RoomItem />
-          <RoomItem />
-          <RoomItem />
-          <RoomItem />
+          {listRooms.length > 0 ? listRooms.map(item => (<RoomItem info={item}/>)): null}
         </Row>
       </Layout.Content>
     </>

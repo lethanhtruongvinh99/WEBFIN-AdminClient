@@ -5,6 +5,10 @@ import "./index.css";
 const { Meta } = Card;
 
 const RoomItem = (props) => {
+  const today = new Date();
+  const createdDate = new Date(props.info.isCreatedAt);
+  const diffTime = today - createdDate;
+  const diffTimeByMin = Math.round(((diffTime % 86400000) % 3600000) / 60000);
   return (
     <Col span={4}>
       <Card
@@ -17,9 +21,9 @@ const RoomItem = (props) => {
           avatar={
             <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
           }
-          title={props.host ? props.host : "Username"}
+          title={props.info.name ? props.info.name : "Username"}
           description={
-            props.createdAt ? props.createdAt : "Created 5 minutes ago"
+            props.info.isCreatedAt ? diffTimeByMin + " minutes ago" : "Created 5 minutes ago"
           }
         />
       </Card>

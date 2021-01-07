@@ -1,6 +1,5 @@
 import { Col } from 'antd';
 import { React, useState } from "react";
-import { useHistory } from "react-router";
 import Board from "../../components/board/index";
 import "./index.css";
 

@@ -1,4 +1,4 @@
-import { Row, Col, Typography, Avatar, Button, Layout } from "antd";
+import { Row, Col, Typography, Avatar, Button, Layout, Spin } from "antd";
 import RoomItem from "./../../components/room-item/index";
 import { useState, useEffect } from 'react';
 import { callServer } from './../../utils/NetworkUtils';
@@ -11,6 +11,8 @@ const UserProfile = (props) =>
 
   const [userProfile, setUserProfile] = useState({});
   const [listHistory, setListHistory] = useState([]);
+
+  const [isLoading, setIsLoading] =  useState(true);
 
   useEffect(() =>
   {
@@ -28,6 +30,7 @@ const UserProfile = (props) =>
       // console.log(result);
       setListHistory(result.data);
       // console.log(result.data);
+      setIsLoading(false);
     }
 
     fetchUserProfile(accountId);
@@ -141,13 +144,8 @@ const UserProfile = (props) =>
         gutter={[30, 30]}
         style={{ margin: "30px 0px" }}
       >
-        {listHistory.size > 0 ? <p>{listHistory.size}</p>: null}
-        <RoomItem />
-        <RoomItem />
-        <RoomItem />
-        <RoomItem />
-        <RoomItem />
-        <RoomItem />
+        {isLoading ? <Spin /> : null}
+        {listHistory.length > 0 ? listHistory.map(item => (<RoomItem info={item} />)): null}
       </Row>
     </Layout.Content>
   );
