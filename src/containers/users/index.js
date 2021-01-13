@@ -1,15 +1,12 @@
 import { Table, Input, Button, Tag, Avatar, Row, Typography, Col } from "antd";
 import { history } from "../../history";
 import { useState, useEffect } from "react";
-import { callServer, callServer2, callServerGET } from './../../utils/NetworkUtils';
+import { callServer} from './../../utils/NetworkUtils';
 const columns = [
   {
     title: "Người dùng",
-    dataIndex: "avatar",
-    key: "avatar",
-    render: () => (
-      <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-    ),
+    dataIndex: "username",
+    key: "username",
   },
   {
     title: "Họ và tên",

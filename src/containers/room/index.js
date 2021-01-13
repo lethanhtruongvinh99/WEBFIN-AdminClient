@@ -1,65 +1,36 @@
 import { Col, Row, Statistic } from "antd";
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import ChatMessage from "../../components/chat-messages/index";
 import Game from "../../components/game/index";
+import { callServer } from "../../utils/NetworkUtils";
 import Move from "./../../components/move/index";
 import "./index.css";
 
 const Room = (props) =>
 {
-    const token = localStorage.getItem("token");
-    const [username, setUsername] = useState("");
-    const [turnName, setTurnName] = useState("");
-    const [message, setMessage] = useState("");
+    // const token = localStorage.getItem("token");
     const [messages, setMessages] = useState([]);
-    const history = useHistory();
-    const urlToken = history.location.pathname.split("/");
+    const roomId = props.match.params.id;
+    console.log(roomId);
 
-
-    const handleClick = (i) => { };
+    useEffect(()=> {
+        const getRoomDetail = async (roomId) => {
+            const result = await callServer(process.env.REACT_APP_HOST_NAME + '/rooms/detail', "POST", {roomid: roomId});
+            console.log(result.data.messages);
+            setMessages(result.data.messages);
+        }
+        getRoomDetail(roomId);
+    }, [])
     return (
         <div style={{ padding: "200px 50px" }}>
-            <Row justify="space-between" align="middle">
-                <Col span={5}>
-                    <Row
-                        style={{ height: "10vh" }}
-                        justify="space-between"
-                        align="middle"
-                    >
-                        <Col>
-                            <Statistic title="Player turn" value="nhatvinh43" />
-                        </Col>
-                        <Col>
-                            <Statistic title="Symbol" value="X " />
-                        </Col>
-                        <Col>
-                            <Statistic title="Time left" value="00:15" />
-                        </Col>
-                    </Row>
-                    <Row style={{ overflowY: "scroll", height: "60vh" }}>
-                        <Move />
-                        <Move />
-                        <Move />
-                        <Move />
-                        <Move />
-                        <Move />
-                        <Move />
-                        <Move />
-                    </Row>
-                </Col>
-
-                <Col className="playing-area">
-                    <Game Username={username} size={20} TurnName={turnName}></Game>
-                </Col>
-
+            <Row justify="center" align="middle">
                 <Col className="chat-box" span={6}>
-                    <Row className="message-container">
+                    <Row id="chatBox" style={{ height: "70vh", overflowY: "scroll" }} className="message-container">
                         {messages.map((item) => (
                             <ChatMessage
-                                key={item.message}
-                                content={item.message}
-                                username={item.username}
+                                key={item._id}
+                                info={item}
                             />
                         ))}
                     </Row>

@@ -1,6 +1,6 @@
 import { Button } from "antd";
-import { React, useEffect, useState } from "react";
-import Connect from "../../api";
+import { React, useEffect } from "react";
+// import Connect from "../../api";
 
 const Homepage = (props) => {
   useEffect(() => {
@@ -9,9 +9,9 @@ const Homepage = (props) => {
       props.history.push("/login");
     }
     // Connect();
-    const socket = Connect();
-    console.log(socket);
-    socket.emit("login", { token: accessToken });
+    // const socket = Connect();
+    // console.log(socket);
+    // socket.emit("login", { token: accessToken });
   }, []);
   const handleLogoutClick = () => {
     localStorage.removeItem("token");
