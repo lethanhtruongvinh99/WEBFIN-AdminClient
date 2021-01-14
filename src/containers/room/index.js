@@ -25,6 +25,7 @@ const Room = (props) =>
     return (
         <div style={{ padding: "200px 50px" }}>
             <Row justify="center" align="middle">
+                {messages.length > 0 ? 
                 <Col className="chat-box" span={6}>
                     <Row id="chatBox" style={{ height: "70vh", overflowY: "scroll" }} className="message-container">
                         {messages.map((item) => (
@@ -33,9 +34,8 @@ const Room = (props) =>
                                 info={item}
                             />
                         ))}
-                    </Row>
-
-                </Col>
+                    </Row> 
+                </Col> : <h1>Không có tin nhắn</h1>}
             </Row>
         </div>
     );

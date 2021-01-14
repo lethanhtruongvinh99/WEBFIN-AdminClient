@@ -50,7 +50,7 @@ const columns = [
 const Users = (props) =>
 {
   const [userList, setUsetList] = useState([]);
-  const [filteredData, setFilteredData] = useState(userList);
+  const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() =>
   {
@@ -67,10 +67,11 @@ const Users = (props) =>
 
   }, [])
 
-  const handleFilter = (event) =>
+  const handleFilter = async (event) =>
   {
     const value = event.target.value;
-    let newFilteredData = userList.filter(
+    console.log(userList);
+    let newFilteredData = await userList.filter(
       (item) =>
         item.fullName.toLowerCase().includes(value.toLowerCase()) ||
         item.email.toLowerCase().includes(value.toLowerCase())
